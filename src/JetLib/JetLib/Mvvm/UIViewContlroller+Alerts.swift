@@ -19,8 +19,8 @@ extension UIViewController: AlertPresenter {
     public func showAlert(title: String?, message: String?, ok: String, cancel: String?) -> Task<Void> {
         let source = Task<Void>.Source()
         showAlertImpl(title: title, message: message, ok: ok, okStyle: .default, cancel: cancel,
-                      handleOk: { try? source.complete() },
-                      handleCancel: { try? source.cancel() })
+                handleOk: { try? source.complete() },
+                handleCancel: { try? source.cancel() })
         return source.task
     }
 
@@ -35,16 +35,15 @@ extension UIViewController: AlertPresenter {
     public func showAlert(title: String?, message: String?, delete: String, cancel: String?) -> Task<Void> {
         let source = Task<Void>.Source()
         showAlertImpl(title: title, message: message, ok: delete, okStyle: .destructive, cancel: cancel,
-                             handleOk: { try? source.complete() },
-                             handleCancel: { try? source.cancel() })
+                handleOk: { try? source.complete() },
+                handleCancel: { try? source.cancel() })
         return source.task
     }
 
     @objc
     func showAlertImpl(title: String?, message: String?, ok: String, okStyle: UIAlertAction.Style, cancel: String?,
                        handleOk: @escaping () -> Void,
-                       handleCancel: @escaping () -> Void)
-    {
+                       handleCancel: @escaping () -> Void) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 
         alert.addAction(UIAlertAction(title: ok, style: okStyle, handler: { _ in handleOk() }))
@@ -53,6 +52,8 @@ extension UIViewController: AlertPresenter {
             alert.addAction(UIAlertAction(title: cancel, style: .cancel, handler: { _ in handleCancel() }))
         }
 
-        self.present(alert, animated: true, completion: nil)
+        DispatchQueue.main.async {
+            self.present(alert, animated: true, completion: nil)
+        }
     }
 }
