@@ -17,7 +17,10 @@ public extension Task {
 
     func displayError(_ presenter: AlertPresenter?) -> Task {
         return self.chainOnFail { [weak presenter] error in
-            presenter?.showAlert(error: error).map { _ in throw error } ?? Task(error)
+            DispatchQueue.main.async {
+                presenter?.showAlert(error: error)
+            }
+            return Task(error)
         }
     }
 }
